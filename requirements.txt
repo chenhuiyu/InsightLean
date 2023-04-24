@@ -4,3 +4,4 @@ langchain
 streamlit
 unstructured
 unstructured[local-inference]
+tiktoken

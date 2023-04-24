@@ -1,9 +1,6 @@
 from langchain.document_loaders import UnstructuredPDFLoader,OnlinePDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-OPENAI_API_KEY='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'
-PINECONE_API_KEY='e2458632-a407-4192-9fa2-04f731ff6d92'
-PINECONE_ENVIRONMENT='northamerica-northeast1-gcp'
 
 loader=UnstructuredPDFLoader('1-s2.0-S0920410521012511-main.pdf')
 data=loader.load()

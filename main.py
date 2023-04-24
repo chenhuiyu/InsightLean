@@ -9,6 +9,12 @@ from langchain.llms import OpenAI
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Chroma, Pinecone
 
+
+OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+PINECONE_API_KEY = os.environ["PINECONE_API_KEY"]
+PINECONE_ENVIRONMENT = os.environ["PINECONE_ENVIRONMENT"]
+
+
 DEFAULT_PDF_FILE = 'https://raw.githubusercontent.com/chenhuiyu/InsightLean/main/1-s2.0-S0920410521012511-main.pdf'
 
 st.title("InsightLean")

@@ -1,3 +1,5 @@
 pinecone-client
 langchain
 streamlit
+unstructured
+unstructured[local-inference]

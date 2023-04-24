@@ -1,4 +1,5 @@
 pinecone-client
+openai
 langchain
 streamlit
 unstructured

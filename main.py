@@ -11,11 +11,6 @@ from langchain.vectorstores import Chroma, Pinecone
 
 DEFAULT_PDF_FILE = 'https://raw.githubusercontent.com/chenhuiyu/InsightLean/main/1-s2.0-S0920410521012511-main.pdf'
 
-OPENAI_API_KEY = os.environ['OPENAI_API_KEY']
-PINECONE_API_KEY = os.environ['PINECONE_API_KEY']
-PINECONE_ENVIRONMENT = os.environ['PINECONE_ENVIRONMENT']
-
-
 st.title("InsightLean")
 uploaded_file = st.file_uploader(
     "Upload a PDF file or use the default file", type=['pdf'])
@@ -24,7 +19,7 @@ uploaded_file = st.file_uploader(
 if uploaded_file:
     loader = UnstructuredPDFLoader(uploaded_file)
 else:
-    loader = UnstructuredPDFLoader(DEFAULT_PDF_FILE)
+    loader = OnlinePDFLoader(DEFAULT_PDF_FILE)
 
 
 with st.spinner("Loading and processing the document..."):

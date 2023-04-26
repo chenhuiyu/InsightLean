@@ -1,6 +1,7 @@
 import streamlit as st
 from langchain import OpenAI
 
+OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 LANGUAGE_INSTRUCTIONS_DICT = {
     "Chinese": "- 请使用中文输出\n",
     "English": "- Please output English.\n"

@@ -1,37 +1,43 @@
-from langchain.document_loaders import UnstructuredPDFLoader,OnlinePDFLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+import streamlit as st
+from langchain import OpenAI
 
+LANGUAGE_INSTRUCTIONS_DICT = {
+    "Chinese": "- 请使用中文输出\n",
+    "English": "- Please output English.\n"
+}
 
-loader=UnstructuredPDFLoader('1-s2.0-S0920410521012511-main.pdf')
-data=loader.load()
-print(f'You have {len(data)} documents in you data')
-print(f'There are {len(data[0].page_content)} characters in your document')
+def load_LLM():
+    llm = OpenAI(temperature=0.5)
+    return llm
 
+def get_language_instructions(language):
+    return LANGUAGE_INSTRUCTIONS_DICT.get(language, "")
 
-# chunk data up into smaller documents
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000,chunk_overlap=0)
-texts=text_splitter.split_documents(data)
-print(f'After split now you have {len(texts)} documents')
+def handle_translation(llm, input_text, language):
+    template = """
+    Below is the target output language:
+    - Language: {language}
+    Below is the input text.
+    - Text: {text}
 
-# create embeddings of your documents to get ready for semantic search
-from langchain.vectorstores import Chroma,Pinecone
-from langchain.embeddings.openai import OpenAIEmbeddings
-import pinecone
+    Your goal is to generate output in the corresponding language based on the input text.Usually use a professional tone in academic papers, and the fields of the papers include civil engineering and mechanics:
+    - Output Text:
+    """
+    prompt_with_query = template.format(language=language, text=input_text)
 
-embeddings= OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
-pinecone.init(api_key=PINECONE_API_KEY,environment=PINECONE_ENVIRONMENT)
-index_name="insightlearn"
-docsearch=Pinecone.from_texts([t.page_content for t in texts],embeddings,index_name=index_name)
+    if input_text:
+        output = llm(prompt_with_query)
+        st.markdown("### Your Translated Text")
+        st.success(output)
 
-query="Who is the author of this paper?"
-docs=docsearch.similarity_search(query)
+def main():
+    st.set_page_config(page_title="Paper Translator", page_icon=":robot:")
+    st.header("Chinese-to-English Paper Translator")
+    input_text = st.text_area(label="", placeholder="请在此处输入中文论文文本...", key="text_input")
+    llm = load_LLM()
+    if input_text and st.button("Translate!"):
+        language = get_language_instructions("English")
+        handle_translation(llm, input_text, language)
 
-len(docs)
-from langchain.llms import OpenAI
-from langchain.chains.question_answering import load_qa_chain
-
-llm=OpenAI(temperature=0,openai_api_key=OPENAI_API_KEY)
-chain=load_qa_chain(llm,chain_type="stuff")
-query="Who is the author of this paper?"
-docs=docsearch.similarity_search(query,include_metadata=True)
-chain.run(input_documents=docs,question=query)
+if __name__ == '__main__':
+    main()
